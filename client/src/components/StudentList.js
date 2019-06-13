@@ -6,7 +6,7 @@ export default class StudentList extends Component {
   state = { students: [] };
 
   componentDidMount() {
-    const apiUrl = 'http://localhost:9000/api/v1.0/students/';
+    const apiUrl = '/api/v1.0/students/';
     axios.get(apiUrl).then(response => {
       this.setState({
         students: response.data

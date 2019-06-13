@@ -6,7 +6,7 @@ export class StudentDetail extends Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
-    const apiUrl = `http://localhost:9000/api/v1.0/students/${id}`;
+    const apiUrl = `/api/v1.0/students/${id}`;
     axios.get(apiUrl).then(response => {
       console.log(response);
       this.setState({ student: response.data });
