@@ -16,6 +16,7 @@ const Student = props => {
           this.props.history.push('/students');
         })
         .catch(error => console.log(error));
+      window.location.replace('/students');
     }
   };
 
