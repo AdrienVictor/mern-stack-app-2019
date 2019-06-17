@@ -7,13 +7,16 @@ const Student = props => {
 
   const deleteStudent = id => {
     const url = `/api/v1.0/students/${id}`;
-    axios
-      .delete(url)
-      .then(response => {
-        console.log(response);
-        this.props.history.push('/students');
-      })
-      .catch(error => console.log(error));
+    const confirm = window.confirm('Are you sure?');
+    if (confirm) {
+      axios
+        .delete(url)
+        .then(response => {
+          console.log(response);
+          this.props.history.push('/students');
+        })
+        .catch(error => console.log(error));
+    }
   };
 
   return (
