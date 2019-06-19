@@ -13,9 +13,22 @@ export default class StudentList extends Component {
       });
     });
   }
+
+  refreshAfterDel = () => {
+    console.log('refresh worked');
+    const apiUrl = '/api/v1.0/students/';
+    axios.get(apiUrl).then(response => {
+      this.setState({
+        students: response.data
+      });
+    });
+  };
+
   renderStudentsList = () => {
     const students = this.state.students;
-    return students.map(student => <Student key={student._id} student={student} />);
+    return students.map(student => (
+      <Student refresh={this.refreshAfterDel} key={student._id} student={student} />
+    ));
   };
 
   render() {
