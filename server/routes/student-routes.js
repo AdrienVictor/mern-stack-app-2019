@@ -1,12 +1,14 @@
 const express = require('express');
 const studentRoute = express.Router();
 const Student = require('../models/Student');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
-studentRoute.route('/').get((req, res) => {
-  res.send('Mern Application');
+studentRoute.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.send('Home page');
 });
 
-studentRoute.route('/students').get((req, res) => {
+studentRoute.get('/students', (req, res) => {
   Student.find({}, (err, students) => {
     if (err) {
       return res.status(404).send('Not found');

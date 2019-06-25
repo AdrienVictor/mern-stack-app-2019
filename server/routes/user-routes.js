@@ -4,6 +4,7 @@ const User = require('../models/User');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const validateSignIn = require('../validation/signin-validation');
 
 userRoute.get('/', (req, res) => {
   res.send('Welcome user');
@@ -40,13 +41,17 @@ userRoute.post('/signup', (req, res) => {
 });
 
 userRoute.post('/signin', (req, res) => {
-  const errors = {};
+  const { errors, isValid } = validateSignIn(req.body);
   const { email, password } = req.body;
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
 
   User.findOne({ email }, (err, user) => {
     if (!user) {
       errors.email = 'Email does not exist';
-      return res.json(errors);
+      return res.status(400).json(errors);
     } else {
       bcrypt.compare(password, user.password, function(err, isMatch) {
         // isMatch === true
@@ -58,14 +63,13 @@ userRoute.post('/signin', (req, res) => {
             email: user.email,
             avatar: user.avatar
           };
-          const key = 'secretKey';
 
-          jwt.sign(payload, key, { expiresIn: 3600 }, (err, token) => {
-            return res.json(token);
+          jwt.sign(payload, process.env.secretOrKey, { expiresIn: 3600 }, (err, token) => {
+            return res.json({ token: `Bearer ${token}` });
           });
         } else {
-          errors.password = 'incorrect password';
-          return res.json(errors);
+          errors.password = 'wrong password';
+          return res.status(400).json(errors);
         }
       });
     }
